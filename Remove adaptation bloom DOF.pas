@@ -4,8 +4,6 @@
 unit MakeItStop;
 
 const
-  DisableAdaptation = True;
-  DisableBloom = True;
   IncludeSunrise = False;
   IncludeDay = True;
   IncludeSunset = False;
@@ -16,6 +14,7 @@ const
 var
   IncludeList, ExcludeList: TStringList;
   RecordSelectForm: TForm;
+  DisableAdaptationCheckBox, DisableBloomCheckBox : TCheckBox;
   CheckListBox: TCheckListBox;
   OutputFile: IInterface;
 
@@ -69,21 +68,32 @@ begin
 
   TopPanel := TPanel.Create(RecordSelectForm);
   TopPanel.BevelWidth := 0;
-  TopPanel.BorderWidth := 6;
-  TopPanel.Height := 103;
+  TopPanel.Height := 127;
   TopPanel.Align := alTop;
   TopPanel.Parent := RecordSelectForm;
 
+  DisableAdaptationCheckBox := TCheckBox.Create(TopPanel);
+  DisableAdaptationCheckBox.Caption := 'Disable Eye Adaptation';
+  DisableAdaptationCheckBox.Checked := True;
+  DisableAdaptationCheckBox.SetBounds(6, 6, 130, 17);
+  DisableAdaptationCheckBox.Parent := TopPanel;
+
+  DisableBloomCheckBox := TCheckBox.Create(TopPanel);
+  DisableBloomCheckBox.Caption := 'Disable Bloom';
+  DisableBloomCheckBox.Checked := True;
+  DisableBloomCheckBox.SetBounds(150, 6, 120, 17);
+  DisableBloomCheckBox.Parent := TopPanel;
+
   DescLabel := TLabel.Create(TopPanel);
-  DescLabel.Align := alClient;
   DescLabel.Caption := 'Eye adaptation and bloom will be disabled for all ' +
-      'ImageSpaces. Additionally, depth of field will be disabled for the ' +
-      'entries selected below. Rules for default selections can be edited ' +
+      'lighting types. Additionally, depth of field will be disabled for ' +
+      'the types selected below. Rules for default selections can be edited ' +
       'at the beginning of the script. Close this window to continue.' +
       #13#10#13#10 +
       'Suffixes: COast, MArsh, FallForest/Riften, REach/Markarth, SNow, ' +
       'TUndra, VolcanicTundra, Aurora';
   DescLabel.WordWrap := True;
+  DescLabel.SetBounds(6, 29, TopPanel.ClientWidth - 12, 90);
   DescLabel.Parent := TopPanel;
 
   CheckListBox := TCheckListBox.Create(RecordSelectForm);
@@ -178,9 +188,9 @@ begin
       Override := WinningOverride(IMGS);
       AddRequiredElementMasters(Override, OutputFile, False);
       NewRecord := wbCopyElementToFile(Override, OutputFile, False, True);
-      if DisableAdaptation then
+      if DisableAdaptationCheckBox.Checked then
         SetElementNativeValues(NewRecord, 'HNAM - HDR\Eye Adapt Speed', 0.0001);
-      if DisableBloom then
+      if DisableBloomCheckBox.Checked then
         SetElementNativeValues(NewRecord, 'HNAM - HDR\Bloom Threshold', 1.0);
       CheckListIndex := CheckListBox.Items.IndexOf(EditorID(IMGS));
       if CheckListIndex > -1 then
