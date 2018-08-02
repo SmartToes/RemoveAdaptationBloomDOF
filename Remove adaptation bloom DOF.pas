@@ -4,6 +4,8 @@
 unit MakeItStop;
 
 const
+  DisableAdaptation = True;
+  DisableBloom = True;
   IncludeSunrise = False;
   IncludeDay = True;
   IncludeSunset = False;
@@ -176,8 +178,10 @@ begin
       Override := WinningOverride(IMGS);
       AddRequiredElementMasters(Override, OutputFile, False);
       NewRecord := wbCopyElementToFile(Override, OutputFile, False, True);
-      SetElementNativeValues(NewRecord, 'HNAM - HDR\Eye Adapt Speed', 0.0001);
-      SetElementNativeValues(NewRecord, 'HNAM - HDR\Bloom Threshold', 1.0);
+      if DisableAdaptation then
+        SetElementNativeValues(NewRecord, 'HNAM - HDR\Eye Adapt Speed', 0.0001);
+      if DisableBloom then
+        SetElementNativeValues(NewRecord, 'HNAM - HDR\Bloom Threshold', 1.0);
       CheckListIndex := CheckListBox.Items.IndexOf(EditorID(IMGS));
       if CheckListIndex > -1 then
         if CheckListBox.Checked[CheckListIndex] then
